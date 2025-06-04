@@ -28,7 +28,9 @@
                 </ul>
             </nav>
             <div class="user-info">
-                <img src="/api/placeholder/40/40" alt="Admin Profile">
+                <div class="admin-icon">
+                    <i class="fas fa-user-shield"></i>
+                </div>
                 <div>
                     <p class="name">Admin User</p>
                     <p class="role">School Admin</p>
@@ -114,6 +116,7 @@
                                 <!-- Recent students will be added here via JavaScript -->
                             </tbody>
                         </table>
+                        <div id="dashboard-pagination-container" class="pagination-container"></div>
                     </div>
                 </section>
 
@@ -157,6 +160,8 @@
                                 <!-- Students will be added here via JavaScript -->
                             </tbody>
                         </table>
+
+                        <div id="students-pagination-container"></div>
                     </div>
                 </section>
 
@@ -190,6 +195,7 @@
                                 <!-- Attendance will be added here via JavaScript -->
                             </tbody>
                         </table>
+                        <div id="attendance-pagination-container"></div>
                         <button id="save-attendance" class="btn primary">Save Attendance</button>
                     </div>
                 </section>
@@ -232,6 +238,7 @@
                                 <!-- Grades will be added here via JavaScript -->
                             </tbody>
                         </table>
+                        <div id="grades-pagination-container"></div>
                         <button id="save-grades" class="btn primary">Save Grades</button>
                     </div>
                 </section>
@@ -288,6 +295,7 @@
                                 <!-- Fee records will be added here via JavaScript -->
                             </tbody>
                         </table>
+                        <div id="fees-pagination-container"></div>
                     </div>
                 </section>
 
