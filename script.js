@@ -1,79 +1,88 @@
 // script.js
 
+let currentDashboardPage = 1;
+let currentStudentPage = 1;
+let currentAttendancePage = 1;
+let currentGradePage = 1;
+let currentFeePage = 1;
+const itemsPerPage = 5;
+
+
 document.addEventListener('DOMContentLoaded', function () {
     // Sample data
     let students = [
         {
             id: "STU001",
-            name: "John Smith",
+            name: "JayaPriya E",
             class: "5",
-            gender: "male",
+            gender: "female",
             dob: "2010-05-15",
-            parentName: "Michael Smith",
-            contactNumber: "555-123-4567",
-            address: "123 Main Street, Anytown",
-            email: "smith@example.com",
+            contactNumber: "+91-9876543210",
+            address: "123 Anna Nagar, Chennai, Tamil Nadu",
+            email: "jayapriya@example.com",
             admissionDate: "2021-09-01",
             feeStatus: "paid",
-            attendance: 95
+            attendance: 95,
+            salary: 45000
         },
         {
             id: "STU002",
-            name: "Emily Johnson",
+            name: "Harini E",
             class: "4",
             gender: "female",
             dob: "2011-03-22",
-            parentName: "David Johnson",
-            contactNumber: "555-234-5678",
-            address: "456 Oak Avenue, Somewhere",
-            email: "johnson@example.com",
+            contactNumber: "+91-8765432109",
+            address: "456 T Nagar, Chennai, Tamil Nadu",
+            email: "harini@example.com",
             admissionDate: "2022-09-01",
             feeStatus: "pending",
-            attendance: 90
+            attendance: 90,
+            salary: 42000
         },
         {
             id: "STU003",
-            name: "Michael Brown",
+            name: "Karishma A",
             class: "3",
-            gender: "male",
+            gender: "female",
             dob: "2012-11-08",
-            parentName: "Sarah Brown",
-            contactNumber: "555-345-6789",
-            address: "789 Pine Road, Nowhere",
-            email: "brown@example.com",
+            contactNumber: "+91-7654321098",
+            address: "789 Adyar, Chennai, Tamil Nadu",
+            email: "karishma@example.com",
             admissionDate: "2023-09-01",
             feeStatus: "overdue",
-            attendance: 85
+            attendance: 85,
+            salary: 38000
         },
         {
             id: "STU004",
-            name: "Sophia Williams",
+            name: "Aarthi S",
             class: "2",
             gender: "female",
             dob: "2013-07-19",
-            parentName: "Robert Williams",
-            contactNumber: "555-456-7890",
-            address: "101 Elm Street, Anywhere",
-            email: "williams@example.com",
+            contactNumber: "+91-6543210987",
+            address: "101 Velachery, Chennai, Tamil Nadu",
+            email: "aarthi@example.com",
             admissionDate: "2022-09-01",
             feeStatus: "paid",
-            attendance: 98
+            attendance: 98,
+            salary: 35000
         },
         {
             id: "STU005",
-            name: "Daniel Miller",
+            name: "Kasthuri S",
             class: "1",
-            gender: "male",
+            gender: "female",
             dob: "2014-09-25",
-            parentName: "Jennifer Miller",
-            contactNumber: "555-567-8901",
-            address: "202 Maple Avenue, Elsewhere",
-            email: "miller@example.com",
+            contactNumber: "+91-5432109876",
+            address: "202 Tambaram, Chennai, Tamil Nadu",
+            email: "kasthuri@example.com",
             admissionDate: "2023-09-01",
             feeStatus: "pending",
-            attendance: 92
+            attendance: 92,
+            salary: 32000
         }
     ];
+
 
     let attendance = {
         // Sample attendance data
@@ -107,15 +116,15 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     let fees = {
-        // Sample fees data
         "apr": {
-            "STU001": { amount: 500, status: "paid", dueDate: "2025-04-10" },
-            "STU002": { amount: 500, status: "pending", dueDate: "2025-04-10" },
-            "STU003": { amount: 450, status: "overdue", dueDate: "2025-04-01" },
-            "STU004": { amount: 400, status: "paid", dueDate: "2025-04-10" },
-            "STU005": { amount: 400, status: "pending", dueDate: "2025-04-10" }
+            "STU001": { amount: 45000, status: "paid", dueDate: "2025-04-10" },
+            "STU002": { amount: 42000, status: "pending", dueDate: "2025-04-10" },
+            "STU003": { amount: 38000, status: "overdue", dueDate: "2025-04-01" },
+            "STU004": { amount: 35000, status: "paid", dueDate: "2025-04-10" },
+            "STU005": { amount: 32000, status: "pending", dueDate: "2025-04-10" }
         }
     };
+
 
     // Navigation functionality
     function setupNavigation() {
@@ -226,6 +235,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Check if we're editing or adding
                 const existingStudentIndex = students.findIndex(s => s.id === studentId);
 
+                // Set default salary based on class if it's a new student
+                let defaultSalary = 35000;
+                switch (studentClass) {
+                    case '1': defaultSalary = 32000; break;
+                    case '2': defaultSalary = 35000; break;
+                    case '3': defaultSalary = 38000; break;
+                    case '4': defaultSalary = 42000; break;
+                    case '5': defaultSalary = 45000; break;
+                }
+
                 const studentData = {
                     id: studentId,
                     name: studentName,
@@ -238,23 +257,36 @@ document.addEventListener('DOMContentLoaded', function () {
                     email: email,
                     admissionDate: admissionDate,
                     feeStatus: existingStudentIndex >= 0 ? students[existingStudentIndex].feeStatus : "pending",
-                    attendance: existingStudentIndex >= 0 ? students[existingStudentIndex].attendance : 0
+                    attendance: existingStudentIndex >= 0 ? students[existingStudentIndex].attendance : 0,
+                    salary: existingStudentIndex >= 0 ? students[existingStudentIndex].salary : defaultSalary
                 };
 
                 if (existingStudentIndex >= 0) {
                     // Update existing student
                     students[existingStudentIndex] = studentData;
                 } else {
-                    // Add new student
+                    // Add new student and create fee entry
                     students.push(studentData);
+
+                    // Create fee entry for current month
+                    const currentMonth = getCurrentMonthCode();
+                    if (!fees[currentMonth]) {
+                        fees[currentMonth] = {};
+                    }
+                    fees[currentMonth][studentId] = {
+                        amount: defaultSalary,
+                        status: "pending",
+                        dueDate: getCurrentDate()
+                    };
                 }
 
                 // Close modal
                 studentModal.style.display = 'none';
 
-                // Refresh student list
+                // Refresh displays
                 renderStudents();
                 renderDashboard();
+                renderFees();
             });
         }
 
@@ -300,64 +332,50 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Initialize app content
-    function initApp() {
-        setupNavigation();
-        setupModals();
-
-        renderDashboard();
-        renderStudents();
-        renderAttendance();
-        renderGrades();
-        renderFees();
-
-        // Set current date for attendance
-        const attendanceDate = document.getElementById('attendance-date');
-        if (attendanceDate) {
-            attendanceDate.value = getCurrentDate();
-        }
-    }
-
     // Render dashboard content
     function renderDashboard() {
-        // Update stats
         const totalStudentsEl = document.querySelector('.total-students');
         if (totalStudentsEl) {
             totalStudentsEl.textContent = students.length;
         }
 
-        // Calculate attendance rate
-        const today = getCurrentDate();
-        let presentCount = 0;
-        if (attendance[today]) {
-            Object.values(attendance[today]).forEach(status => {
+        // Calculate overall attendance rate from all recorded dates
+        let totalPresentCount = 0;
+        let totalAttendanceRecords = 0;
+
+        // Loop through all attendance dates
+        Object.keys(attendance).forEach(date => {
+            Object.values(attendance[date]).forEach(status => {
+                totalAttendanceRecords++;
                 if (status === 'present' || status === 'late') {
-                    presentCount++;
+                    totalPresentCount++;
                 }
             });
-        }
-        const attendanceRate = students.length > 0 ? Math.round((presentCount / students.length) * 100) : 0;
+        });
+
+        // Calculate overall attendance rate
+        const attendanceRate = totalAttendanceRecords > 0 ? Math.round((totalPresentCount / totalAttendanceRecords) * 100) : 0;
+
         const attendanceRateEl = document.querySelector('.attendance-rate');
         if (attendanceRateEl) {
             attendanceRateEl.textContent = `${attendanceRate}%`;
         }
 
-        // Calculate fee collection
-        const currentMonth = getCurrentMonthCode();
+        // Fix fee collection calculation - include all students and all months
         let feeCollection = 0;
-        if (fees[currentMonth]) {
-            Object.values(fees[currentMonth]).forEach(fee => {
+        Object.keys(fees).forEach(month => {
+            Object.values(fees[month]).forEach(fee => {
                 if (fee.status === 'paid') {
                     feeCollection += fee.amount;
                 }
             });
-        }
+        });
+
         const feeCollectionEl = document.querySelector('.fee-collection');
         if (feeCollectionEl) {
-            feeCollectionEl.textContent = `₹${feeCollection}`;
+            feeCollectionEl.textContent = `₹${feeCollection.toLocaleString('en-IN')}`;
         }
 
-        // Calculate average performance
         let totalGrade = 0;
         let gradeCount = 0;
         if (grades.midterm && grades.midterm.math) {
@@ -372,27 +390,39 @@ document.addEventListener('DOMContentLoaded', function () {
             avgPerformanceEl.textContent = `${avgPerformance}%`;
         }
 
-        // Render recent students
+        // NEW PAGINATED RECENT STUDENTS SECTION
         const recentStudentsBody = document.getElementById('recent-students-body');
         if (recentStudentsBody) {
             recentStudentsBody.innerHTML = '';
 
-            // Display 5 most recent students (or fewer if less exist)
-            const recentStudents = [...students].reverse().slice(0, 5);
+            // Get all students in reverse order (most recent first)
+            const allStudents = [...students].reverse();
 
-            recentStudents.forEach(student => {
+            // Calculate pagination for dashboard
+            const totalPages = Math.ceil(allStudents.length / itemsPerPage);
+            const startIndex = (currentDashboardPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const paginatedStudents = allStudents.slice(startIndex, endIndex);
+
+            // Render students
+            paginatedStudents.forEach(student => {
                 const row = document.createElement('tr');
-
                 row.innerHTML = `
-                    <td>${student.id}</td>
-                    <td>${student.name}</td>
-                    <td>Class ${student.class}</td>
-                    <td><span class="badge-status badge-${student.feeStatus}">${capitalizeFirstLetter(student.feeStatus)}</span></td>
-                    <td>${student.attendance}%</td>
-                `;
-
+            <td>${student.id}</td>
+            <td>${student.name}</td>
+            <td>Class ${student.class}</td>
+            <td><span class="badge-status badge-${student.feeStatus}">${capitalizeFirstLetter(student.feeStatus)}</span></td>
+            <td>${student.attendance}%</td>
+        `;
                 recentStudentsBody.appendChild(row);
             });
+
+            // Render pagination for dashboard
+            renderGenericPagination('dashboard-pagination-container', totalPages, currentDashboardPage,
+                (page) => {
+                    currentDashboardPage = page;
+                    renderDashboard();
+                }, allStudents.length, 'students');
         }
     }
 
@@ -408,52 +438,111 @@ document.addEventListener('DOMContentLoaded', function () {
 
         let filteredStudents = [...students];
 
-        // Apply class filter if exists
-        if (classFilter && classFilter.value !== 'all') {
+        // Apply filters
+        if (classFilter && classFilter.value && classFilter.value !== 'all') {
             filteredStudents = filteredStudents.filter(student => student.class === classFilter.value);
         }
 
-        // Apply search filter if exists
-        if (searchInput && searchInput.value) {
-            const searchQuery = searchInput.value.toLowerCase();
+        if (searchInput && searchInput.value.trim()) {
+            const searchQuery = searchInput.value.toLowerCase().trim();
             filteredStudents = filteredStudents.filter(student =>
                 student.id.toLowerCase().includes(searchQuery) ||
-                student.name.toLowerCase().includes(searchQuery)
+                student.name.toLowerCase().includes(searchQuery) ||
+                student.contactNumber.toLowerCase().includes(searchQuery) ||
+                student.email.toLowerCase().includes(searchQuery)
             );
         }
 
-        filteredStudents.forEach(student => {
+        filteredStudents.sort((a, b) => a.name.localeCompare(b.name));
+
+        // Calculate pagination
+        const totalPages = Math.ceil(filteredStudents.length / itemsPerPage);
+        const startIndex = (currentStudentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const paginatedStudents = filteredStudents.slice(startIndex, endIndex);
+
+        paginatedStudents.forEach(student => {
             const row = document.createElement('tr');
-
             row.innerHTML = `
-                <td>${student.id}</td>
-                <td>${student.name}</td>
-                <td>Class ${student.class}</td>
-                <td>${capitalizeFirstLetter(student.gender)}</td>
-                <td>${student.contactNumber}</td>
-                <td><span class="badge-status badge-${student.feeStatus}">${capitalizeFirstLetter(student.feeStatus)}</span></td>
-                <td class="action-buttons">
-                    <button class="action-btn edit-btn" data-id="${student.id}"><i class="fas fa-edit"></i></button>
-                    <button class="action-btn delete-btn" data-id="${student.id}"><i class="fas fa-trash"></i></button>
-                    <button class="action-btn payment-btn" data-id="${student.id}"><i class="fas fa-dollar-sign"></i></button>
-                </td>
-            `;
-
+            <td>${student.id}</td>
+            <td>${student.name}</td>
+            <td>Class ${student.class}</td>
+            <td>${capitalizeFirstLetter(student.gender)}</td>
+            <td>${student.contactNumber}</td>
+            <td>₹${student.salary ? student.salary.toLocaleString('en-IN') : '0'}</td>
+            <td><span class="badge-status badge-${student.feeStatus}">${capitalizeFirstLetter(student.feeStatus)}</span></td>
+            <td class="action-buttons">
+                <button class="action-btn edit-btn" data-id="${student.id}"><i class="fas fa-edit"></i></button>
+                <button class="action-btn delete-btn" data-id="${student.id}"><i class="fas fa-trash"></i></button>
+                <button class="action-btn payment-btn" data-id="${student.id}"><i class="fas fa-rupee-sign"></i></button>
+            </td>
+        `;
             studentsTableBody.appendChild(row);
         });
 
-        // Attach event handlers
+        // Render pagination
+        renderGenericPagination('students-pagination-container', totalPages, currentStudentPage,
+            (page) => {
+                currentStudentPage = page;
+                renderStudents();
+            }, filteredStudents.length, 'students');
+
         attachStudentEventHandlers();
-
-        // Add event listeners for filter changes
-        if (classFilter) {
-            classFilter.addEventListener('change', renderStudents);
-        }
-
-        if (searchInput) {
-            searchInput.addEventListener('input', renderStudents);
-        }
     }
+
+
+    function renderGenericPagination(containerId, totalPages, currentPage, onPageChange, totalItems, itemType) {
+        const paginationContainer = document.getElementById(containerId);
+        if (!paginationContainer) return;
+
+        paginationContainer.innerHTML = '';
+
+        if (totalPages <= 1) return;
+
+        // Previous button
+        const prevBtn = document.createElement('button');
+        prevBtn.textContent = 'Previous';
+        prevBtn.className = 'pagination-btn';
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                onPageChange(currentPage - 1);
+            }
+        });
+        paginationContainer.appendChild(prevBtn);
+
+        // Page numbers
+        for (let i = 1; i <= totalPages; i++) {
+            const pageBtn = document.createElement('button');
+            pageBtn.textContent = i;
+            pageBtn.className = `pagination-btn ${i === currentPage ? 'active' : ''}`;
+            pageBtn.addEventListener('click', () => {
+                onPageChange(i);
+            });
+            paginationContainer.appendChild(pageBtn);
+        }
+
+        // Next button
+        const nextBtn = document.createElement('button');
+        nextBtn.textContent = 'Next';
+        nextBtn.className = 'pagination-btn';
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.addEventListener('click', () => {
+            if (currentPage < totalPages) {
+                onPageChange(currentPage + 1);
+            }
+        });
+        paginationContainer.appendChild(nextBtn);
+
+        // Show results info
+        const startIndex = (currentPage - 1) * itemsPerPage + 1;
+        const endIndex = Math.min(currentPage * itemsPerPage, totalItems);
+        const resultsInfo = document.createElement('div');
+        resultsInfo.className = 'pagination-info';
+        resultsInfo.textContent = `Showing ${startIndex}-${endIndex} of ${totalItems} ${itemType}`;
+        paginationContainer.appendChild(resultsInfo);
+    }
+
 
     // Attach event handlers for student actions
     function attachStudentEventHandlers() {
@@ -524,17 +613,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         document.getElementById('payment-student-id').value = student.id;
         document.getElementById('student-name-display').value = student.name;
-
-        // Set default amount based on class
-        let defaultAmount = 400;
-        if (student.class === '4' || student.class === '5') {
-            defaultAmount = 500;
-        } else if (student.class === '3') {
-            defaultAmount = 450;
-        }
-        document.getElementById('payment-amount').value = defaultAmount;
-
-        // Set current date
+        document.getElementById('payment-amount').value = student.salary || 35000;
         document.getElementById('payment-date').value = getCurrentDate();
 
         paymentModal.style.display = 'block';
@@ -558,40 +637,52 @@ document.addEventListener('DOMContentLoaded', function () {
         // Filter students by selected class
         const classStudents = students.filter(student => student.class === selectedClass);
 
-        classStudents.forEach(student => {
+        // Calculate pagination
+        const totalPages = Math.ceil(classStudents.length / itemsPerPage);
+        const startIndex = (currentAttendancePage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const paginatedStudents = classStudents.slice(startIndex, endIndex);
+
+        paginatedStudents.forEach(student => {
             const row = document.createElement('tr');
 
-            // Get student's attendance status for the selected date
-            let status = 'present'; // Default to present
+            let status = 'present';
             if (attendance[selectedDate] && attendance[selectedDate][student.id]) {
                 status = attendance[selectedDate][student.id];
             }
 
             row.innerHTML = `
-                <td>${student.id}</td>
-                <td>${student.name}</td>
-                <td>
-                    <div class="attendance-option present-option ${status === 'present' ? 'selected' : ''}" 
-                         data-student="${student.id}" data-status="present">
-                        <i class="fas fa-check"></i>
-                    </div>
-                </td>
-                <td>
-                    <div class="attendance-option absent-option ${status === 'absent' ? 'selected' : ''}" 
-                         data-student="${student.id}" data-status="absent">
-                        <i class="fas fa-times"></i>
-                    </div>
-                </td>
-                <td>
-                    <div class="attendance-option late-option ${status === 'late' ? 'selected' : ''}" 
-                         data-student="${student.id}" data-status="late">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                </td>
-            `;
+            <td>${student.id}</td>
+            <td>${student.name}</td>
+            <td>
+                <div class="attendance-option present-option ${status === 'present' ? 'selected' : ''}" 
+                     data-student="${student.id}" data-status="present">
+                    <i class="fas fa-check"></i>
+                </div>
+            </td>
+            <td>
+                <div class="attendance-option absent-option ${status === 'absent' ? 'selected' : ''}" 
+                     data-student="${student.id}" data-status="absent">
+                    <i class="fas fa-times"></i>
+                </div>
+            </td>
+            <td>
+                <div class="attendance-option late-option ${status === 'late' ? 'selected' : ''}" 
+                     data-student="${student.id}" data-status="late">
+                    <i class="fas fa-clock"></i>
+                </div>
+            </td>
+        `;
 
             attendanceTableBody.appendChild(row);
         });
+
+        // Render pagination
+        renderGenericPagination('attendance-pagination-container', totalPages, currentAttendancePage,
+            (page) => {
+                currentAttendancePage = page;
+                renderAttendance();
+            }, classStudents.length, 'students');
 
         // Add event handlers for attendance options
         document.querySelectorAll('.attendance-option').forEach(option => {
@@ -599,15 +690,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 const studentId = this.getAttribute('data-student');
                 const status = this.getAttribute('data-status');
 
-                // Remove selected class from all options for this student
                 document.querySelectorAll(`.attendance-option[data-student="${studentId}"]`).forEach(opt => {
                     opt.classList.remove('selected');
                 });
 
-                // Add selected class to clicked option
                 this.classList.add('selected');
 
-                // Update attendance data
                 const date = document.getElementById('attendance-date').value;
                 if (!attendance[date]) {
                     attendance[date] = {};
@@ -616,21 +704,17 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
 
-        // Add event listeners for filter changes
-        classFilter.addEventListener('change', renderAttendance);
-        dateFilter.addEventListener('change', renderAttendance);
-
-        // Add event listener for save button
-        const saveAttendanceBtn = document.getElementById('save-attendance');
-        if (saveAttendanceBtn) {
-            saveAttendanceBtn.addEventListener('click', function () {
-                alert('Attendance saved successfully!');
-                // Update overall attendance percentage for each student
-                updateAttendanceStats();
-                renderDashboard();
-            });
-        }
+        // Reset to first page when filters change
+        classFilter.addEventListener('change', () => {
+            currentAttendancePage = 1;
+            renderAttendance();
+        });
+        dateFilter.addEventListener('change', () => {
+            currentAttendancePage = 1;
+            renderAttendance();
+        });
     }
+
 
     // Update attendance statistics
     function updateAttendanceStats() {
@@ -672,13 +756,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
         gradesTableBody.innerHTML = '';
 
-        // Filter students by selected class
         const classStudents = students.filter(student => student.class === selectedClass);
 
-        classStudents.forEach(student => {
+        // Calculate pagination
+        const totalPages = Math.ceil(classStudents.length / itemsPerPage);
+        const startIndex = (currentGradePage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const paginatedStudents = classStudents.slice(startIndex, endIndex);
+
+        paginatedStudents.forEach(student => {
             const row = document.createElement('tr');
 
-            // Get student's grade for the selected subject and term
             let marks = '';
             if (grades[selectedTerm] &&
                 grades[selectedTerm][selectedSubject] &&
@@ -686,21 +774,27 @@ document.addEventListener('DOMContentLoaded', function () {
                 marks = grades[selectedTerm][selectedSubject][student.id];
             }
 
-            // Calculate letter grade
             const letterGrade = getLetterGrade(marks);
 
             row.innerHTML = `
-                <td>${student.id}</td>
-                <td>${student.name}</td>
-                <td>
-                    <input type="number" class="grade-input" value="${marks}" min="0" max="100" 
-                           data-student="${student.id}" data-subject="${selectedSubject}" data-term="${selectedTerm}">
-                </td>
-                <td>${letterGrade}</td>
-            `;
+            <td>${student.id}</td>
+            <td>${student.name}</td>
+            <td>
+                <input type="number" class="grade-input" value="${marks}" min="0" max="100" 
+                       data-student="${student.id}" data-subject="${selectedSubject}" data-term="${selectedTerm}">
+            </td>
+            <td>${letterGrade}</td>
+        `;
 
             gradesTableBody.appendChild(row);
         });
+
+        // Render pagination
+        renderGenericPagination('grades-pagination-container', totalPages, currentGradePage,
+            (page) => {
+                currentGradePage = page;
+                renderGrades();
+            }, classStudents.length, 'students');
 
         // Add event handlers for grade inputs
         document.querySelectorAll('.grade-input').forEach(input => {
@@ -710,11 +804,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 const subject = this.getAttribute('data-subject');
                 const term = this.getAttribute('data-term');
 
-                // Update grade display
                 const letterGradeTd = this.parentElement.nextElementSibling;
                 letterGradeTd.textContent = getLetterGrade(marks);
 
-                // Update grades data
                 if (!grades[term]) {
                     grades[term] = {};
                 }
@@ -725,20 +817,21 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
 
-        // Add event listeners for filter changes
-        classFilter.addEventListener('change', renderGrades);
-        subjectFilter.addEventListener('change', renderGrades);
-        termFilter.addEventListener('change', renderGrades);
-
-        // Add event listener for save button
-        const saveGradesBtn = document.getElementById('save-grades');
-        if (saveGradesBtn) {
-            saveGradesBtn.addEventListener('click', function () {
-                alert('Grades saved successfully!');
-                renderDashboard();
-            });
-        }
+        // Reset to first page when filters change
+        classFilter.addEventListener('change', () => {
+            currentGradePage = 1;
+            renderGrades();
+        });
+        subjectFilter.addEventListener('change', () => {
+            currentGradePage = 1;
+            renderGrades();
+        });
+        termFilter.addEventListener('change', () => {
+            currentGradePage = 1;
+            renderGrades();
+        });
     }
+
 
     // Render fees
     function renderFees() {
@@ -749,44 +842,46 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!monthFilter) return;
 
         const selectedMonth = monthFilter.value;
-
         feesTableBody.innerHTML = '';
 
-        students.forEach(student => {
-            const row = document.createElement('tr');
+        // Calculate pagination
+        const totalPages = Math.ceil(students.length / itemsPerPage);
+        const startIndex = (currentFeePage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const paginatedStudents = students.slice(startIndex, endIndex);
 
-            // Get student's fee for the selected month
+        paginatedStudents.forEach(student => {
+            const row = document.createElement('tr');
             let fee = { amount: 0, status: 'pending', dueDate: '' };
+
             if (fees[selectedMonth] && fees[selectedMonth][student.id]) {
                 fee = fees[selectedMonth][student.id];
             } else {
-                // Set default fee amount based on class
-                let defaultAmount = 400;
-                if (student.class === '4' || student.class === '5') {
-                    defaultAmount = 500;
-                } else if (student.class === '3') {
-                    defaultAmount = 450;
-                }
-                fee.amount = defaultAmount;
+                fee.amount = student.salary || 35000;
                 fee.dueDate = getCurrentDate();
             }
 
             row.innerHTML = `
-                <td>${student.id}</td>
-                <td>${student.name}</td>
-                <td>Class ${student.class}</td>
-                <td>$${fee.amount}</td>
-                <td><span class="badge-status badge-${fee.status}">${capitalizeFirstLetter(fee.status)}</span></td>
-                <td>${fee.dueDate}</td>
-                <td class="action-buttons">
-                    <button class="action-btn payment-btn" data-id="${student.id}"><i class="fas fa-dollar-sign"></i></button>
-                </td>
-            `;
-
+            <td>${student.id}</td>
+            <td>${student.name}</td>
+            <td>Class ${student.class}</td>
+            <td>₹${fee.amount.toLocaleString('en-IN')}</td>
+            <td><span class="badge-status badge-${fee.status}">${capitalizeFirstLetter(fee.status)}</span></td>
+            <td>${fee.dueDate}</td>
+            <td class="action-buttons">
+                <button class="action-btn payment-btn" data-id="${student.id}"><i class="fas fa-rupee-sign"></i></button>
+            </td>
+        `;
             feesTableBody.appendChild(row);
         });
 
-        // Attach payment event handlers
+        // Render pagination
+        renderGenericPagination('fees-pagination-container', totalPages, currentFeePage,
+            (page) => {
+                currentFeePage = page;
+                renderFees();
+            }, students.length, 'students');
+
         document.querySelectorAll('.payment-btn').forEach(btn => {
             btn.addEventListener('click', function () {
                 const studentId = this.getAttribute('data-id');
@@ -794,8 +889,11 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
 
-        // Add event listeners for filter changes
-        monthFilter.addEventListener('change', renderFees);
+        // Reset to first page when filter changes
+        monthFilter.addEventListener('change', () => {
+            currentFeePage = 1;
+            renderFees();
+        });
     }
 
     // Helper functions
@@ -836,6 +934,215 @@ document.addEventListener('DOMContentLoaded', function () {
         if (marks >= 60) return 'C';
         if (marks >= 50) return 'D';
         return 'F';
+    }
+
+    function initializeSearchAndFilters() {
+        // Student search functionality
+        const studentSearch = document.getElementById('student-search');
+        if (studentSearch) {
+            studentSearch.addEventListener('input', debounce(renderStudents, 300));
+        }
+
+        // Class filter functionality
+        const classFilter = document.getElementById('class-filter');
+        if (classFilter) {
+            classFilter.addEventListener('change', renderStudents);
+        }
+
+        // Attendance filters
+        const attendanceClassFilter = document.getElementById('attendance-class-filter');
+        if (attendanceClassFilter) {
+            attendanceClassFilter.addEventListener('change', renderAttendance);
+        }
+
+        const attendanceDate = document.getElementById('attendance-date');
+        if (attendanceDate) {
+            attendanceDate.addEventListener('change', renderAttendance);
+        }
+
+        // Grade filters
+        const gradeClassFilter = document.getElementById('grade-class-filter');
+        const gradeSubjectFilter = document.getElementById('grade-subject-filter');
+        const gradeTermFilter = document.getElementById('grade-term-filter');
+
+        if (gradeClassFilter) gradeClassFilter.addEventListener('change', renderGrades);
+        if (gradeSubjectFilter) gradeSubjectFilter.addEventListener('change', renderGrades);
+        if (gradeTermFilter) gradeTermFilter.addEventListener('change', renderGrades);
+
+        // Fee filter
+        const feeMonthFilter = document.getElementById('fee-month-filter');
+        if (feeMonthFilter) {
+            feeMonthFilter.addEventListener('change', renderFees);
+        }
+    }
+
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    function generateAttendanceCSV() {
+        const csvData = [];
+        csvData.push(['Student ID', 'Student Name', 'Class', 'Date', 'Status']);
+
+        Object.keys(attendance).forEach(date => {
+            Object.keys(attendance[date]).forEach(studentId => {
+                const student = students.find(s => s.id === studentId);
+                if (student) {
+                    csvData.push([
+                        studentId,
+                        student.name,
+                        student.class,
+                        date,
+                        attendance[date][studentId]
+                    ]);
+                }
+            });
+        });
+
+        downloadCSV(csvData, 'attendance_report.csv');
+    }
+
+    function generatePerformanceCSV() {
+        const csvData = [];
+        csvData.push(['Student ID', 'Student Name', 'Class', 'Subject', 'Term', 'Marks', 'Grade']);
+
+        Object.keys(grades).forEach(term => {
+            Object.keys(grades[term]).forEach(subject => {
+                Object.keys(grades[term][subject]).forEach(studentId => {
+                    const student = students.find(s => s.id === studentId);
+                    const marks = grades[term][subject][studentId];
+                    if (student) {
+                        csvData.push([
+                            studentId,
+                            student.name,
+                            student.class,
+                            subject,
+                            term,
+                            marks,
+                            getLetterGrade(marks)
+                        ]);
+                    }
+                });
+            });
+        });
+
+        downloadCSV(csvData, 'performance_report.csv');
+    }
+
+    function generateFeeCollectionCSV() {
+        const csvData = [];
+        csvData.push(['Student ID', 'Student Name', 'Class', 'Month', 'Amount', 'Status', 'Due Date']);
+
+        Object.keys(fees).forEach(month => {
+            Object.keys(fees[month]).forEach(studentId => {
+                const student = students.find(s => s.id === studentId);
+                const fee = fees[month][studentId];
+                if (student) {
+                    csvData.push([
+                        studentId,
+                        student.name,
+                        student.class,
+                        month,
+                        fee.amount,
+                        fee.status,
+                        fee.dueDate
+                    ]);
+                }
+            });
+        });
+
+        downloadCSV(csvData, 'fee_collection_report.csv');
+    }
+
+    function generateExportDataCSV() {
+        const csvData = [];
+        csvData.push(['Student ID', 'Name', 'Class', 'Gender', 'DOB', 'Contact', 'Address', 'Email', 'Admission Date', 'Fee Status', 'Attendance %', 'Salary']);
+
+        students.forEach(student => {
+            csvData.push([
+                student.id,
+                student.name,
+                student.class,
+                student.gender,
+                student.dob,
+                student.contactNumber,
+                student.address,
+                student.email,
+                student.admissionDate,
+                student.feeStatus,
+                student.attendance,
+                student.salary
+            ]);
+        });
+
+        downloadCSV(csvData, 'all_students_data.csv');
+    }
+
+    function downloadCSV(data, filename) {
+        const csvContent = data.map(row =>
+            row.map(field => `"${field}"`).join(',')
+        ).join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+
+        if (link.download !== undefined) {
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    }
+
+    function setupReportButtons() {
+        const reportButtons = document.querySelectorAll('.report-card button');
+        reportButtons.forEach((button, index) => {
+            button.addEventListener('click', function () {
+                switch (index) {
+                    case 0: // Attendance Report
+                        generateAttendanceCSV();
+                        break;
+                    case 1: // Performance Report
+                        generatePerformanceCSV();
+                        break;
+                    case 2: // Fee Collection Report
+                        generateFeeCollectionCSV();
+                        break;
+                    case 3: // Export Data
+                        generateExportDataCSV();
+                        break;
+                }
+            });
+        });
+    }
+
+    function initApp() {
+        setupNavigation();
+        setupModals();
+        setupReportButtons(); // Add this line
+        initializeSearchAndFilters();
+
+        renderDashboard();
+        renderStudents();
+        renderAttendance();
+        renderGrades();
+        renderFees();
+
+        const attendanceDate = document.getElementById('attendance-date');
+        if (attendanceDate) {
+            attendanceDate.value = getCurrentDate();
+        }
     }
 
     // Initialize the application
